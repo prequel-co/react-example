@@ -1,24 +1,53 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import {
+  useDestinationVendors,
+  DestinationVendor,
+  LOCALHOST_8080,
+} from "@prequel/react";
+
+import DestinationForm from "./DestinationForm";
+import Dropdown, { Option } from "./Dropdown";
+
+import "./App.css";
 
 function App() {
+  const [vendorOptions, setVendorOptions] = useState<Option[]>([]);
+  const [vendorsList, setVendorsList] = useState<DestinationVendor[]>();
+  const [selectedVendor, setSelectedVendor] = useState<DestinationVendor>();
+  const destinationVendorsResponse = useDestinationVendors(LOCALHOST_8080);
+
+  useEffect(() => {
+    if (destinationVendorsResponse?.data?.destinations) {
+      setVendorsList(destinationVendorsResponse.data.destinations);
+      setVendorOptions(
+        destinationVendorsResponse.data.destinations.map((dest) => ({
+          value: dest.vendor_name,
+          display: dest.display_name,
+        }))
+      );
+    }
+  }, [destinationVendorsResponse]);
+
+  useEffect(() => {
+    if (vendorsList) {
+      setSelectedVendor(vendorsList[0]);
+    }
+  }, [vendorsList]);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Dropdown
+        label="Choose a vendor:"
+        options={vendorOptions}
+        selected={selectedVendor?.vendor_name ?? ""}
+        setSelected={(vendor: string) => {
+          const found = vendorsList?.find((v) => v.vendor_name === vendor);
+          setSelectedVendor(found);
+        }}
+      />
+      {selectedVendor && (
+        <DestinationForm vendor={selectedVendor} orgId={"org_id_here"} />
+      )}
     </div>
   );
 }
