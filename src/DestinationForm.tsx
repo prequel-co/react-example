@@ -4,9 +4,9 @@ import {
   useCreateDestination,
   useModelConfigs,
   useProductConfigs,
-  convertDestination,
+  prepareDestination,
   Destination,
-  SubmittableDestination,
+  PreparedDestination,
   DestinationVendor,
   VendorField,
   ProductConfig,
@@ -16,7 +16,7 @@ import {
 
 import Dropdown from "./Dropdown";
 
-const fetchToken = (d: SubmittableDestination | undefined) => {
+const fetchToken = (d: PreparedDestination | undefined) => {
   // fetch auth token via API here
   return new Promise<string>((resolve) => resolve("API KEY"));
 };
@@ -143,9 +143,8 @@ const DestinationForm = ({ vendor, orgId }: DestinationFormProps) => {
 
   async function fetchTestConnection() {
     setStatus("Pending");
-    const convertedDestination: SubmittableDestination =
-      convertDestination(destination);
-    const response = await testConnection(convertedDestination);
+    const prepared: PreparedDestination = prepareDestination(destination);
+    const response = await testConnection(prepared);
     if (response.data === "success") {
       setStatus("Connection successful");
       setConnectionValid(true);
@@ -156,16 +155,15 @@ const DestinationForm = ({ vendor, orgId }: DestinationFormProps) => {
   }
 
   async function saveDestination() {
-    const convertedDestination: SubmittableDestination =
-      convertDestination(destination);
+    const prepared: PreparedDestination = prepareDestination(destination);
     if (connectionValid) {
       const allModelsEnabled = availableModels.length === selectedModels.length;
       if (allModelsEnabled) {
-        convertedDestination.enabled_models = ["*"];
+        prepared.enabled_models = ["*"];
       } else {
-        convertedDestination.enabled_models = selectedModels;
+        prepared.enabled_models = selectedModels;
       }
-      const response = await createDestination(convertedDestination);
+      const response = await createDestination(prepared);
       alert(response.status);
     }
   }
