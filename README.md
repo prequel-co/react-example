@@ -1,6 +1,6 @@
 # Getting Started with the Prequel React Example App
 
-This example app shows a sample Create Destination form that demonstrates how you can use hooks from [@prequel/react](https://www.npmjs.com/package/@prequel/react) to build a self-serve form in your application that allows users to register their destinations. This example app contains no styling and uses generic browser form components in order to minimize dependencies. For more details on usage of [@prequel/react](https://www.npmjs.com/package/@prequel/react), please see our [docs](https://docs.prequel.co/docs/react).
+This example app shows how you can use hooks from [@prequel/react](https://www.npmjs.com/package/@prequel/react) in your own application. These hooks enable you to build a form that allows users to register their warehouses as Prequel destinations. This example app contains no styling and uses generic browser form components in order to minimize dependencies. For more details on usage of [@prequel/react](https://www.npmjs.com/package/@prequel/react), please see our [docs](https://docs.prequel.co/docs/react).
 
 ## Available Scripts
 
