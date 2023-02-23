@@ -17,16 +17,16 @@ function App() {
   const destinationVendorsResponse = useDestinationVendors(LOCALHOST_8080);
 
   useEffect(() => {
-    if (destinationVendorsResponse?.data?.destinations) {
-      setVendorsList(destinationVendorsResponse.data.destinations);
+    if (destinationVendorsResponse?.destinations && !vendorsList) {
+      setVendorsList(destinationVendorsResponse.destinations);
       setVendorOptions(
-        destinationVendorsResponse.data.destinations.map((dest) => ({
+        destinationVendorsResponse.destinations.map((dest) => ({
           value: dest.vendor_name,
           display: dest.display_name,
         }))
       );
     }
-  }, [destinationVendorsResponse]);
+  }, [destinationVendorsResponse, vendorsList]);
 
   useEffect(() => {
     if (vendorsList) {

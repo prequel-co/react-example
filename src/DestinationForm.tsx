@@ -9,16 +9,16 @@ import {
   PreparedDestination,
   DestinationVendor,
   VendorField,
-  ProductConfig,
-  ModelConfig,
   LOCALHOST_8080,
 } from "@prequel/react";
 
-import Dropdown from "./Dropdown";
-
-const fetchToken = (d: PreparedDestination | undefined) => {
-  // fetch auth token via API here
-  return new Promise<string>((resolve) => resolve("API KEY"));
+const fetchToken = () => {
+  return fetch("<your endpoint to generate a scoped auth token>")
+    .then((response: Response) => response.json())
+    .then((body) => body.scoped_token)
+    .catch((reason) => {
+      console.error(reason);
+    });
 };
 
 type DestinationFormProps = {
@@ -50,8 +50,8 @@ const DestinationForm = ({ vendor, orgId }: DestinationFormProps) => {
 
   const [status, setStatus] = useState("Test required");
   const [connectionValid, setConnectionValid] = useState(false);
-  const [availableProducts, setAvailableProducts] = useState<ProductConfig[]>();
-  const [selectedProduct, setSelectedProduct] = useState<ProductConfig>();
+  const [availableProducts, setAvailableProducts] = useState<string[]>();
+  const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
   const [availableModels, setAvailableModels] = useState<string[]>([]);
   const [selectedModels, setSelectedModels] = useState<string[]>([]);
   const [destination, setDestination] = useState<Destination>({
@@ -69,7 +69,7 @@ const DestinationForm = ({ vendor, orgId }: DestinationFormProps) => {
     bucket_access_id: "",
     bucket_secret_key: "",
     enabled_models: [],
-    product: "",
+    products: [],
     use_ssh_tunnel: false,
     ssh_tunnel_host: "",
     ssh_tunnel_port: "",
@@ -79,8 +79,8 @@ const DestinationForm = ({ vendor, orgId }: DestinationFormProps) => {
   });
 
   const required = vendor.fields
-    .filter((f: VendorField) => f.required)
-    .map((f: VendorField) => f.name);
+    .filter(({ is_required }: VendorField) => is_required)
+    .map(({ name }: VendorField) => name);
 
   const hasField = (field: string) =>
     vendor.fields.find((f: VendorField) => f.name === field);
@@ -97,25 +97,40 @@ const DestinationForm = ({ vendor, orgId }: DestinationFormProps) => {
 
   useEffect(() => {
     if (product_configs) {
-      setAvailableProducts(product_configs);
-      setSelectedProduct(product_configs[0]);
+      setAvailableProducts(
+        product_configs.map(({ product_name }) => product_name)
+      );
     }
   }, [product_configs]);
 
   useEffect(() => {
-    if (model_configs) {
-      setAvailableModels(
-        model_configs.map((c: ModelConfig) => c.model_name) ?? []
-      );
+    // Set available models with all models in the case there are no product configs
+    if (model_configs && !product_configs) {
+      setAvailableModels(model_configs.map(({ model_name }) => model_name));
+      setSelectedModels(model_configs.map(({ model_name }) => model_name));
     }
-  }, [model_configs]);
+  }, [model_configs, product_configs]);
 
   useEffect(() => {
-    if (selectedProduct) {
-      setDestinationField("product", selectedProduct.product_name);
-      setAvailableModels(selectedProduct.models);
+    // Update available models if selectedProducts changes
+    if (product_configs && model_configs) {
+      setDestinationField("products", selectedProducts);
+
+      let modelNames: string[] = [];
+      product_configs.forEach(({ product_name, models }) => {
+        // If the product is selected, append all models
+        if (selectedProducts.includes(product_name)) {
+          modelNames = [...modelNames, ...models];
+        }
+      });
+
+      // Deduplicate the models by validating against the model configs list
+      const models = model_configs.filter(({ model_name }) =>
+        modelNames.includes(model_name)
+      );
+      setAvailableModels(models.map(({ model_name }) => model_name));
     }
-  }, [selectedProduct]);
+  }, [selectedProducts, product_configs, model_configs]);
 
   useEffect(() => {
     setSelectedModels(availableModels);
@@ -125,7 +140,18 @@ const DestinationForm = ({ vendor, orgId }: DestinationFormProps) => {
     setDestinationField("vendor", vendor.vendor_name);
   }, [vendor]);
 
-  const updatedSelectedModels = (isSelected: boolean, modelName: string) => {
+  const updateSelectedProducts = (isSelected: boolean, productName: string) => {
+    let updatedProducts: string[] = [];
+    if (isSelected) {
+      updatedProducts = [...selectedProducts, productName];
+    } else {
+      updatedProducts = selectedProducts.filter((m) => m !== productName);
+    }
+
+    setSelectedProducts(updatedProducts);
+  };
+
+  const updateSelectedModels = (isSelected: boolean, modelName: string) => {
     let newModels: string[] = [];
     if (isSelected) {
       newModels = [...selectedModels, modelName];
@@ -446,21 +472,23 @@ const DestinationForm = ({ vendor, orgId }: DestinationFormProps) => {
           </>
         )}
         <br />
-        {availableProducts && (
-          <Dropdown
-            label="Select a product:"
-            options={availableProducts.map((p) => ({
-              value: p.product_name,
-              display: p.product_name,
-            }))}
-            selected={selectedProduct ? selectedProduct.product_name : ""}
-            setSelected={(p) =>
-              setSelectedProduct(
-                availableProducts.find(({ product_name }) => product_name === p)
-              )
-            }
-          />
-        )}
+        {availableProducts &&
+          availableProducts.map((productName) => (
+            <div key={productName}>
+              <label htmlFor={productName}>{productName}</label>
+              <input
+                type="checkbox"
+                id={productName}
+                checked={selectedProducts.includes(productName)}
+                onChange={() =>
+                  updateSelectedProducts(
+                    !selectedProducts.includes(productName),
+                    productName
+                  )
+                }
+              />
+            </div>
+          ))}
         <br />
         {availableModels &&
           availableModels.map((modelName) => (
@@ -469,10 +497,10 @@ const DestinationForm = ({ vendor, orgId }: DestinationFormProps) => {
               <input
                 type="checkbox"
                 id={modelName}
-                checked={!!selectedModels?.find((s) => s === modelName)}
+                checked={selectedModels.includes(modelName)}
                 onChange={() =>
-                  updatedSelectedModels(
-                    !selectedModels?.find((s) => s === modelName),
+                  updateSelectedModels(
+                    !selectedModels.includes(modelName),
                     modelName
                   )
                 }
