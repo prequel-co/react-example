@@ -13,6 +13,7 @@ import Spinner from "react-bootstrap/Spinner";
 
 import TestConnection from "./TestConnection";
 import fetchToken from "./fetchToken";
+import ProductsAndModels from "./ProductsAndModels";
 
 const DestinationForm = () => {
   const formRef = useRef<HTMLFormElement>(null);
