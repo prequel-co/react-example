@@ -20,7 +20,7 @@ const DestinationForm = () => {
   const [destination, setDestination] = useDestination();
   const destinationForm = useDestinationForm(
     destination,
-    "your-org-id-in-prequel"
+    process.env.REACT_APP_PREQUEL_ORG_ID ?? ""
   );
   const createDestination = useCreateDestination(fetchToken, "localhost:3000");
 
@@ -225,6 +225,8 @@ const DestinationForm = () => {
                     </div>
                   </>
                 );
+              } else {
+                return <></>;
               }
             })}
           </Form.Group>
