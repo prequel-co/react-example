@@ -10,6 +10,7 @@ import {
   useCreateDestination,
   useDestination,
   useDestinationForm,
+  prepareDestinationWithForm,
 } from "@prequel/react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
@@ -18,7 +19,6 @@ import Spinner from "react-bootstrap/Spinner";
 
 import TestConnection from "./TestConnection";
 import fetchToken from "./fetchToken";
-import prepareDestination from "./prepareDestination";
 import ProductsAndModels from "./ProductsAndModels";
 
 const DestinationForm = () => {
@@ -53,7 +53,7 @@ const DestinationForm = () => {
   );
 
   const preparedDestination = useMemo(
-    () => prepareDestination(destination, destinationForm),
+    () => prepareDestinationWithForm(destination, destinationForm),
     [destination, destinationForm]
   );
 
@@ -99,7 +99,7 @@ const DestinationForm = () => {
             {section.fields.map((field) => {
               if (field.const) {
                 return (
-                  <>
+                  <div key={field.name} className="mb-3">
                     <Form.Label className="d-flex">{field.label}</Form.Label>
                     {typeof field.const === "object" ? (
                       <Card className="m-3 bg-light border border-dark">
@@ -123,7 +123,7 @@ const DestinationForm = () => {
                         {field.const}
                       </Card>
                     )}
-                  </>
+                  </div>
                 );
               } else if (field.form_element === "select") {
                 const items = field.enum.map(({ key, display }) => ({
@@ -213,8 +213,9 @@ const DestinationForm = () => {
                     </div>
                   );
                 }
+
                 return (
-                  <>
+                  <div key={field.name} className="mb-3">
                     <Form.Label className="d-flex">{field.label}</Form.Label>
                     <div className="d-flex justify-content-around">
                       {field.enum.map(({ key, display }) => (
@@ -233,7 +234,7 @@ const DestinationForm = () => {
                         />
                       ))}
                     </div>
-                  </>
+                  </div>
                 );
               } else {
                 return <></>;
