@@ -1,7 +1,6 @@
-import React, { Fragment, useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   Destination,
-  LOCALHOST_8080,
   useModels,
   useProducts,
   ModelConfig,
@@ -24,8 +23,8 @@ const ProductsAndModels = ({
   setDestinationField,
 }: ProductsAndModelsProps) => {
   const [availableModels, setAvailableModels] = useState<ModelConfig[]>([]);
-  const models = useModels(fetchToken, "localhost:3000", LOCALHOST_8080);
-  const products = useProducts(fetchToken, "localhost:3000", LOCALHOST_8080);
+  const models = useModels(fetchToken, "localhost:3000");
+  const products = useProducts(fetchToken, "localhost:3000");
 
   useEffect(() => {
     // if selectedProducts change, update the available models list

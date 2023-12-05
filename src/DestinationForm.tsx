@@ -1,7 +1,12 @@
-import React, { Fragment, useCallback, useEffect, useRef } from "react";
+import React, {
+  Fragment,
+  useMemo,
+  useCallback,
+  useEffect,
+  useRef,
+} from "react";
 import {
   Destination,
-  prepareDestination,
   useCreateDestination,
   useDestination,
   useDestinationForm,
@@ -13,6 +18,7 @@ import Spinner from "react-bootstrap/Spinner";
 
 import TestConnection from "./TestConnection";
 import fetchToken from "./fetchToken";
+import prepareDestination from "./prepareDestination";
 import ProductsAndModels from "./ProductsAndModels";
 
 const DestinationForm = () => {
@@ -46,12 +52,16 @@ const DestinationForm = () => {
     [setDestination]
   );
 
+  const preparedDestination = useMemo(
+    () => prepareDestination(destination, destinationForm),
+    [destination, destinationForm]
+  );
+
   const validateForm = () =>
     formRef.current ? formRef.current.reportValidity() : false;
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const preparedDestination = prepareDestination(destination);
     const response = await createDestination(preparedDestination);
     if (response.status === "success") {
       const name = response.data?.destination.name ?? "";
@@ -238,7 +248,10 @@ const DestinationForm = () => {
         setDestinationField={setDestinationField}
       />
       <hr />
-      <TestConnection destination={destination} validateForm={validateForm} />
+      <TestConnection
+        preparedDestination={preparedDestination}
+        validateForm={validateForm}
+      />
       <hr />
       <Button type="submit">Submit form</Button>
     </Form>

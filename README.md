@@ -8,6 +8,7 @@ This example app shows how you can use hooks from [@prequel/react](https://www.n
 4. Add `API_KEY` with your Prequel API Key as a value to the `.env` file
     1. We recommend you use a staging API key
 5. Add `PREQUEL_HOST` with your Prequel Host as a value to the `.env` file
+    1. Be sure to prefix with `https://`, i.e. `PREQUEL_HOST=https://<your-prequel-api>`
 6. Add `REACT_APP_PREQUEL_ORG_ID` with your Prequel Org ID as a value to the `.env` file
     1. This isn't strictly required, if you omit the Org ID you will get a form, but it will not contain any of the relevant IAM authentication objects
 7. Run both the Node server and React app with `npm run example`

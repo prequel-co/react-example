@@ -1,9 +1,5 @@
 import React, { useState } from "react";
-import {
-  Destination,
-  prepareDestination,
-  useTestConnection,
-} from "@prequel/react";
+import { PreparedDestination, useTestConnection } from "@prequel/react";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import Spinner from "react-bootstrap/Spinner";
@@ -11,10 +7,13 @@ import Spinner from "react-bootstrap/Spinner";
 import fetchToken from "./fetchToken";
 
 type TestConnectionProps = {
-  destination: Destination;
+  preparedDestination: PreparedDestination;
   validateForm: () => boolean;
 };
-const TestConnection = ({ destination, validateForm }: TestConnectionProps) => {
+const TestConnection = ({
+  preparedDestination,
+  validateForm,
+}: TestConnectionProps) => {
   const [testRunning, setTestRunning] = useState(false);
   const [testResult, setTestResult] = useState<string | null>(null);
   const testConnection = useTestConnection(fetchToken, "localhost:9999");
@@ -23,7 +22,6 @@ const TestConnection = ({ destination, validateForm }: TestConnectionProps) => {
     validateForm();
     setTestRunning(true);
     setTestResult("Testing new connection...");
-    const preparedDestination = prepareDestination(destination);
     const { data, message } = await testConnection(preparedDestination);
     if (data) {
       setTestResult("Connection test successful.");
