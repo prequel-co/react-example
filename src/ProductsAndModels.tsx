@@ -8,6 +8,7 @@ import {
 import Form from "react-bootstrap/Form";
 
 import fetchToken from "./fetchToken";
+import { PREQUEL_HOST, REACT_ORIGIN } from "./host";
 
 const ALL_CURRENT_FUTURE_MODELS = ["*"];
 
@@ -23,8 +24,8 @@ const ProductsAndModels = ({
   setDestinationField,
 }: ProductsAndModelsProps) => {
   const [availableModels, setAvailableModels] = useState<ModelConfig[]>([]);
-  const models = useModels(fetchToken, "localhost:3000");
-  const products = useProducts(fetchToken, "localhost:3000");
+  const models = useModels(fetchToken, REACT_ORIGIN, PREQUEL_HOST);
+  const products = useProducts(fetchToken, REACT_ORIGIN, PREQUEL_HOST);
 
   useEffect(() => {
     // if selectedProducts change, update the available models list

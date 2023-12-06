@@ -6,9 +6,9 @@ import dotenv from "dotenv";
 // Get the API key from .env
 dotenv.config();
 const API_KEY = process.env.API_KEY;
-const PREQUEL_HOST = process.env.PREQUEL_HOST;
+const PREQUEL_HOST = process.env.REACT_APP_PREQUEL_HOST;
 const REACT_APP_PORT = process.env.REACT_APP_PORT ?? 3000;
-const NODE_SERVER_PORT = process.env.NODE_SERVER_PORT ?? 9999;
+const NODE_SERVER_PORT = process.env.REACT_APP_NODE_SERVER_PORT ?? 9999;
 
 const app = express();
 

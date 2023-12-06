@@ -20,15 +20,22 @@ import Spinner from "react-bootstrap/Spinner";
 import TestConnection from "./TestConnection";
 import fetchToken from "./fetchToken";
 import ProductsAndModels from "./ProductsAndModels";
+import { PREQUEL_HOST, REACT_ORIGIN } from "./host";
 
 const DestinationForm = () => {
   const formRef = useRef<HTMLFormElement>(null);
   const [destination, setDestination] = useDestination();
   const destinationForm = useDestinationForm(
     destination,
-    process.env.REACT_APP_PREQUEL_ORG_ID ?? ""
+    process.env.REACT_APP_PREQUEL_ORG_ID ?? "",
+    false,
+    PREQUEL_HOST
   );
-  const createDestination = useCreateDestination(fetchToken, "localhost:3000");
+  const createDestination = useCreateDestination(
+    fetchToken,
+    REACT_ORIGIN,
+    PREQUEL_HOST
+  );
 
   useEffect(() => {
     setDestination((currentDestination) => ({

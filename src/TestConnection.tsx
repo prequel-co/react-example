@@ -5,6 +5,7 @@ import Card from "react-bootstrap/Card";
 import Spinner from "react-bootstrap/Spinner";
 
 import fetchToken from "./fetchToken";
+import { REACT_ORIGIN, PREQUEL_HOST } from "./host";
 
 type TestConnectionProps = {
   preparedDestination: PreparedDestination;
@@ -16,7 +17,11 @@ const TestConnection = ({
 }: TestConnectionProps) => {
   const [testRunning, setTestRunning] = useState(false);
   const [testResult, setTestResult] = useState<string | null>(null);
-  const testConnection = useTestConnection(fetchToken, "localhost:9999");
+  const testConnection = useTestConnection(
+    fetchToken,
+    REACT_ORIGIN,
+    PREQUEL_HOST
+  );
 
   async function testDestinationConnection() {
     validateForm();

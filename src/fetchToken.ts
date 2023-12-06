@@ -1,7 +1,8 @@
 import { PreparedDestination } from "@prequel/react";
+import { API_HOST } from "./host";
 
 const fetchToken: (d?: PreparedDestination) => Promise<string> = (destination) =>
-  fetch("http://localhost:9999/auth-token", {
+  fetch(`http://${API_HOST}/auth-token`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
