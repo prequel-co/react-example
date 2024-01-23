@@ -7,8 +7,8 @@ import {
 } from "@prequel/react";
 import Form from "react-bootstrap/Form";
 
-import fetchToken from "./fetchToken";
-import { PREQUEL_HOST, REACT_ORIGIN } from "./host";
+import fetchToken from "../../fetchToken";
+import { PREQUEL_HOST, REACT_ORIGIN } from "../../host";
 
 const ALL_CURRENT_FUTURE_MODELS = ["*"];
 

@@ -17,12 +17,12 @@ import Form from "react-bootstrap/Form";
 import Card from "react-bootstrap/Card";
 import Spinner from "react-bootstrap/Spinner";
 
-import TestConnection from "./TestConnection";
-import fetchToken from "./fetchToken";
+import TestConnection from "../TestConnection";
+import fetchToken from "../fetchToken";
 import ProductsAndModels from "./ProductsAndModels";
-import { PREQUEL_HOST, REACT_ORIGIN } from "./host";
+import { PREQUEL_HOST, REACT_ORIGIN } from "../host";
 
-const DestinationForm = () => {
+const DestinationFormExample = () => {
   const formRef = useRef<HTMLFormElement>(null);
   const [destination, setDestination] = useDestination();
   const destinationForm = useDestinationForm(
@@ -266,4 +266,4 @@ const DestinationForm = () => {
   );
 };
 
-export default DestinationForm;
+export default DestinationFormExample;
