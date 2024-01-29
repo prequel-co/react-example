@@ -7,8 +7,8 @@ import {
 } from "@prequel/react";
 import Form from "react-bootstrap/Form";
 
-import fetchToken from "../../fetchToken";
-import { PREQUEL_HOST, REACT_ORIGIN } from "../../host";
+import fetchToken from "../fetchToken";
+import { PREQUEL_HOST, REACT_ORIGIN } from "../host";
 
 const ALL_CURRENT_FUTURE_MODELS = ["*"];
 
@@ -26,7 +26,6 @@ const ProductsAndModels = ({
   const [availableModels, setAvailableModels] = useState<ModelConfig[]>([]);
   const models = useModels(fetchToken, REACT_ORIGIN, PREQUEL_HOST);
   const products = useProducts(fetchToken, REACT_ORIGIN, PREQUEL_HOST);
-
   useEffect(() => {
     // if selectedProducts change, update the available models list
     if (products) {
@@ -54,7 +53,10 @@ const ProductsAndModels = ({
     const newEnabledModels = destination.enabled_models?.filter((m) =>
       newAvailableModelNames.includes(m)
     );
-    setDestinationField("enabled_models", newEnabledModels);
+
+    if (!allCurrentFutureModelsSelected) {
+      setDestinationField("enabled_models", newEnabledModels);
+    }
   }, [availableModels]); // eslint-disable-line
 
   const allCurrentFutureModelsSelected = useMemo(
@@ -95,7 +97,7 @@ const ProductsAndModels = ({
           Select what products the destination will receive
         </Form.Label>
         {products &&
-          products.map(({ product_name, models }) => (
+          products.map(({ product_name }) => (
             <Form.Check
               key={product_name}
               id={product_name}
@@ -104,6 +106,7 @@ const ProductsAndModels = ({
               onChange={({ target }) =>
                 updateProducts(target.checked, product_name)
               }
+              disabled={destination.recipient_identifier === "recipient_id"}
             />
           ))}
       </div>
