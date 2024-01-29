@@ -3,7 +3,6 @@ import Table from "react-bootstrap/Table";
 import {
   ExistingDestination,
   Transfer,
-  getDefaultExistingDestination,
   useGetDestinationsForRecipient,
   useGetTransfers,
 } from "@prequel/react";
@@ -38,12 +37,13 @@ const GetTransfersExample = () => {
 
   useEffect(() => {
     if (destinations?.length) {
+      setTransfers(undefined);
       setCurrentDestination(destinations[0]);
     }
   }, [destinations]);
 
   useEffect(() => {
-    if (currentDestination) {
+    if (currentDestination && !transfers) {
       const fetchTransfers = async () => {
         const transfersResponse = await getTransfers(currentDestination);
         setTransfers(transfersResponse.data?.transfers);
@@ -51,14 +51,14 @@ const GetTransfersExample = () => {
 
       fetchTransfers();
     }
-  }, [getTransfers, currentDestination]);
+  }, [getTransfers, currentDestination, transfers]);
 
   return (
     <div>
       <div className="mb-5">
         {destinations && (
           <Dropdown>
-            <Dropdown.Toggle variant="secondary" id="dropdown-basic">
+            <Dropdown.Toggle variant="tertiary" id="dropdown-basic">
               Select a destination
             </Dropdown.Toggle>
 
@@ -66,8 +66,18 @@ const GetTransfersExample = () => {
               {destinations.map((d) => (
                 <Dropdown.Item
                   key={d.id}
-                  onClick={() => setCurrentDestination(d)}
-                >{`${d.name} (${d.id})`}</Dropdown.Item>
+                  onClick={() => {
+                    setCurrentDestination(d);
+                    setTransfers(undefined);
+                  }}
+                  style={
+                    currentDestination?.id === d.id
+                      ? { backgroundColor: "lightgray" }
+                      : {}
+                  }
+                >
+                  {`${d.name} (${d.id})`}
+                </Dropdown.Item>
               ))}
             </Dropdown.Menu>
           </Dropdown>
@@ -95,7 +105,7 @@ const GetTransfersExample = () => {
                       <td>{t.id}</td>
                       <td>{t.status}</td>
                       <td>{t.log}</td>
-                      <td>{t.toString()}</td>
+                      <td>{JSON.stringify(t)}</td>
                     </tr>
                   ))}
                 </>
