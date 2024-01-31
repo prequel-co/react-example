@@ -20,7 +20,7 @@ import {
 import fetchToken, { fetchTokenRecipient } from "../fetchToken";
 import { PREQUEL_HOST, REACT_ORIGIN } from "../host";
 import { Button, Card, Dropdown, Form, Spinner } from "react-bootstrap";
-import TestConnection from "../TestConnection";
+import TextExistingConnection from "./TestExistingConnection";
 import ProductsAndModels from "../ProductsAndModels";
 
 export const prepareDestinationFromExisting: (
@@ -299,7 +299,6 @@ const UpdateDestinationExample = () => {
                         <Form.Switch
                           id={field.name}
                           inline={true}
-                          required={field.required}
                           label={field.label}
                           checked={!!destination[field.name]}
                           onChange={({ target }) =>
@@ -345,10 +344,13 @@ const UpdateDestinationExample = () => {
           setDestinationField={setDestinationField}
         />
         <hr />
-        <TestConnection
-          preparedDestination={preparedDestination}
-          validateForm={validateForm}
-        />
+        {currentDestination && (
+          <TextExistingConnection
+            destination={currentDestination}
+            preparedDestination={preparedDestination}
+            validateForm={validateForm}
+          />
+        )}
         <hr />
         <Button type="submit">Submit form</Button>
       </Form>

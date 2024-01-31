@@ -98,7 +98,7 @@ const GetTransfersExample = () => {
               </tr>
             </thead>
             <tbody>
-              {transfers ? (
+              {transfers && transfers.length ? (
                 <>
                   {transfers.map((t) => (
                     <tr key={t.id}>

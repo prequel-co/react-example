@@ -11,7 +11,7 @@ import Form from "react-bootstrap/Form";
 import Card from "react-bootstrap/Card";
 import Spinner from "react-bootstrap/Spinner";
 
-import TestConnection from "../TestConnection";
+import TestConnection from "./TestConnection";
 import fetchToken from "../fetchToken";
 import ProductsAndModels from "../ProductsAndModels";
 import { PREQUEL_HOST, REACT_ORIGIN } from "../host";
@@ -200,7 +200,6 @@ const CreateDestinationExample = () => {
                       <Form.Switch
                         id={field.name}
                         inline={true}
-                        required={field.required}
                         label={field.label}
                         checked={!!destination[field.name]}
                         onChange={({ target }) =>
