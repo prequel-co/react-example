@@ -4,8 +4,8 @@ import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import Spinner from "react-bootstrap/Spinner";
 
-import fetchToken from "./fetchToken";
-import { REACT_ORIGIN, PREQUEL_HOST } from "./host";
+import fetchToken from "../../fetchToken";
+import { REACT_ORIGIN, PREQUEL_HOST } from "../../host";
 
 type TestConnectionProps = {
   preparedDestination: PreparedDestination;
