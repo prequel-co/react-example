@@ -66,18 +66,6 @@ const ProductsAndModels = ({
     [destination.enabled_models]
   );
 
-  const updateProducts = (isEnabled: boolean, productName: string) => {
-    let updatedProducts: string[] = [];
-    if (isEnabled) {
-      updatedProducts = [...(destination.products ?? []), productName];
-    } else {
-      updatedProducts =
-        destination.products?.filter((p) => p !== productName) ?? [];
-    }
-
-    setDestinationField("products", updatedProducts);
-  };
-
   const updateModels = (isEnabled: boolean, modelName: string) => {
     let updatedModels: string[] = [];
     if (isEnabled) {
@@ -91,71 +79,49 @@ const ProductsAndModels = ({
   };
 
   return (
-    <div>
-      <div className="mb-3 d-flex flex-column align-items-start">
-        <Form.Label>
-          Select what products the destination will receive
-        </Form.Label>
-        {products &&
-          products.map(({ product_name }) => (
-            <Form.Check
-              key={product_name}
-              id={product_name}
-              label={product_name}
-              checked={destination.products?.includes(product_name)}
-              onChange={({ target }) =>
-                updateProducts(target.checked, product_name)
-              }
-              disabled={destination.recipient_identifier === "recipient_id"}
-            />
-          ))}
-      </div>
-      <div className="mb-3 d-flex flex-column align-items-start">
-        <Form.Label>Select what models the destination will receive</Form.Label>
-        {availableModels.length > 0 ? (
-          <>
-            {availableModels.map(({ model_name, description }) => {
-              const label = description
-                ? `${model_name} - ${description}`
-                : model_name;
-              return (
-                <div key={model_name} className="mb-3">
-                  <Form.Check
-                    id={model_name}
-                    label={label}
-                    checked={
-                      destination.enabled_models?.includes(model_name) ||
-                      allCurrentFutureModelsSelected
-                    }
-                    onChange={({ target }) =>
-                      updateModels(target.checked, model_name)
-                    }
-                    disabled={allCurrentFutureModelsSelected}
-                  />
-                </div>
-              );
-            })}
-            <Form.Check
-              key={"all_models_present_future"}
-              id={"all_models_present_future"}
-              label={
-                "All current and future models (Any model added to these products in the future will be synced)"
-              }
-              checked={allCurrentFutureModelsSelected}
-              onChange={({ target }) =>
-                target.checked
-                  ? setDestinationField(
-                      "enabled_models",
-                      ALL_CURRENT_FUTURE_MODELS
-                    )
-                  : setDestinationField("enabled_models", [])
-              }
-            />
-          </>
-        ) : (
-          <Form.Text>You must select a product first.</Form.Text>
-        )}
-      </div>
+    <div className="mb-3 d-flex flex-column align-items-start">
+      <Form.Label>Select what models the destination will receive</Form.Label>
+      {availableModels.length > 0 && (
+        <>
+          {availableModels.map(({ model_name, description }) => {
+            const label = description
+              ? `${model_name} - ${description}`
+              : model_name;
+            return (
+              <div key={model_name} className="mb-3">
+                <Form.Check
+                  id={model_name}
+                  label={label}
+                  checked={
+                    destination.enabled_models?.includes(model_name) ||
+                    allCurrentFutureModelsSelected
+                  }
+                  onChange={({ target }) =>
+                    updateModels(target.checked, model_name)
+                  }
+                  disabled={allCurrentFutureModelsSelected}
+                />
+              </div>
+            );
+          })}
+          <Form.Check
+            key={"all_models_present_future"}
+            id={"all_models_present_future"}
+            label={
+              "All current and future models (Any model added to these products in the future will be synced)"
+            }
+            checked={allCurrentFutureModelsSelected}
+            onChange={({ target }) =>
+              target.checked
+                ? setDestinationField(
+                    "enabled_models",
+                    ALL_CURRENT_FUTURE_MODELS
+                  )
+                : setDestinationField("enabled_models", [])
+            }
+          />
+        </>
+      )}
     </div>
   );
 };

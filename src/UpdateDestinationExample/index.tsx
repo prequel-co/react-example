@@ -8,8 +8,8 @@ import React, {
 } from "react";
 import {
   Destination,
-  DestinationType,
   ExistingDestination,
+  prepareDestinationFromExisting,
   prepareDestinationWithForm,
   useDestination,
   useDestinationForm,
@@ -22,31 +22,6 @@ import { PREQUEL_HOST, REACT_ORIGIN } from "../host";
 import { Button, Card, Dropdown, Form, Spinner } from "react-bootstrap";
 import TextExistingConnection from "./TestExistingConnection";
 import ProductsAndModels from "../ProductsAndModels";
-
-export const prepareDestinationFromExisting: (
-  e: ExistingDestination
-) => Destination = (existing) => {
-  let authMethod: "credentials" | "iam_role" = "credentials";
-  if (existing.aws_iam_role || existing.gcp_iam_role) {
-    authMethod = "iam_role";
-  }
-  return {
-    ...existing,
-    type: DestinationType.Destination,
-    auth_method: authMethod,
-    password: "",
-    recipient_identifier: "recipient_id", // All destinations use recipient IDs after creation
-    service_account_key: JSON.stringify(existing.service_account_key) ?? "",
-    frequency_minutes: existing.frequency_minutes
-      ? existing.frequency_minutes.toString()
-      : "0",
-    port: existing.port ? existing.port.toString() : "",
-    ssh_tunnel_port: existing.ssh_tunnel_port
-      ? existing.ssh_tunnel_port.toString()
-      : "",
-    use_ssh_tunnel: existing.use_ssh_tunnel ?? false,
-  };
-};
 
 const UpdateDestinationExample = () => {
   const formRef = useRef<HTMLFormElement>(null);

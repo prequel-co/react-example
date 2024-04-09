@@ -9,7 +9,7 @@ const API_KEY = process.env.API_KEY;
 const PREQUEL_HOST = process.env.REACT_APP_PREQUEL_HOST;
 const REACT_APP_PORT = process.env.REACT_APP_PORT ?? 3000;
 const NODE_SERVER_PORT = process.env.REACT_APP_NODE_SERVER_PORT ?? 9999;
-
+const RECIPIENT_ID = process.env.REACT_APP_RECIPIENT_ID;
 const app = express();
 
 // Allow all origins
@@ -29,9 +29,11 @@ app.post(AUTH_TOKEN, async (req, res) => {
     headers: {
       "X-API-KEY": API_KEY,
       "Content-Type": "application/json",
+      "X-Prequel-Api-Version": "2023-12-01",
     },
     body: JSON.stringify({
       application_origin: REACT_EXAMPLE_ORIGIN,
+      recipient_id: RECIPIENT_ID,
       destination: req.body,
     }),
   }).then((response) => response.json())

@@ -250,7 +250,7 @@ const CreateDestinationExample = () => {
         validateForm={validateForm}
       />
       <hr />
-      <Button type="submit">Submit form</Button>
+      <Button type="submit">Submit destination</Button>
     </Form>
   );
 };
