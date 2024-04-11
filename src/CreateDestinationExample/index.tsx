@@ -1,10 +1,4 @@
-import React, {
-  Fragment,
-  useMemo,
-  useCallback,
-  useEffect,
-  useRef,
-} from "react";
+import React, { Fragment, useMemo, useCallback, useRef } from "react";
 import {
   Destination,
   useCreateDestination,
@@ -18,13 +12,18 @@ import Card from "react-bootstrap/Card";
 import Spinner from "react-bootstrap/Spinner";
 
 import TestConnection from "./TestConnection";
-import fetchToken from "./fetchToken";
-import ProductsAndModels from "./ProductsAndModels";
-import { PREQUEL_HOST, REACT_ORIGIN } from "./host";
+import fetchToken from "../fetchToken";
+import ProductsAndModels from "../ProductsAndModels";
+import { PREQUEL_HOST, REACT_ORIGIN } from "../host";
 
-const DestinationForm = () => {
+const CreateDestinationExample = () => {
   const formRef = useRef<HTMLFormElement>(null);
-  const [destination, setDestination] = useDestination();
+  const [destination, setDestination] = useDestination({
+    name: "New Snowflake Example Destination",
+    recipient_id: process.env.REACT_APP_RECIPIENT_ID ?? "",
+    products: ["all"],
+    enabled_models: ["*"],
+  });
   const destinationForm = useDestinationForm(
     destination,
     process.env.REACT_APP_PREQUEL_ORG_ID ?? "",
@@ -36,15 +35,6 @@ const DestinationForm = () => {
     REACT_ORIGIN,
     PREQUEL_HOST
   );
-
-  useEffect(() => {
-    setDestination((currentDestination) => ({
-      ...currentDestination,
-      name: "React Example Destination",
-      id_in_provider_system: "react_example",
-      products: ["all"],
-    }));
-  }, [setDestination]);
 
   const setDestinationField = useCallback(
     (
@@ -210,7 +200,6 @@ const DestinationForm = () => {
                       <Form.Switch
                         id={field.name}
                         inline={true}
-                        required={field.required}
                         label={field.label}
                         checked={!!destination[field.name]}
                         onChange={({ target }) =>
@@ -261,9 +250,9 @@ const DestinationForm = () => {
         validateForm={validateForm}
       />
       <hr />
-      <Button type="submit">Submit form</Button>
+      <Button type="submit">Submit destination</Button>
     </Form>
   );
 };
 
-export default DestinationForm;
+export default CreateDestinationExample;
