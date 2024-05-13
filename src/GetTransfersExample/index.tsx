@@ -3,11 +3,11 @@ import Table from "react-bootstrap/Table";
 import {
   ExistingDestination,
   Transfer,
-  useGetDestinationsForRecipient,
+  useGetDestinations,
   useGetTransfers,
 } from "@prequel/react";
 
-import fetchToken, { fetchTokenRecipient } from "../fetchToken";
+import fetchToken from "../fetchToken";
 import { PREQUEL_HOST, REACT_ORIGIN } from "../host";
 import { Dropdown } from "react-bootstrap";
 
@@ -17,8 +17,8 @@ const GetTransfersExample = () => {
     useState<ExistingDestination>();
   const [transfers, setTransfers] = useState<Transfer[]>();
   const getTransfers = useGetTransfers(fetchToken, REACT_ORIGIN, PREQUEL_HOST);
-  const getDestinations = useGetDestinationsForRecipient(
-    fetchTokenRecipient,
+  const getDestinations = useGetDestinations(
+    fetchToken,
     REACT_ORIGIN,
     PREQUEL_HOST
   );
@@ -27,8 +27,8 @@ const GetTransfersExample = () => {
   useEffect(() => {
     if (recipientId && !destinations) {
       const fetchDestinations = async () => {
-        const destinationsResponse = await getDestinations(recipientId);
-        setDestinations(destinationsResponse.data?.destinations);
+        const destinations = await getDestinations();
+        setDestinations(destinations);
       };
 
       fetchDestinations();
@@ -45,8 +45,8 @@ const GetTransfersExample = () => {
   useEffect(() => {
     if (currentDestination && !transfers) {
       const fetchTransfers = async () => {
-        const transfersResponse = await getTransfers(currentDestination);
-        setTransfers(transfersResponse.data?.transfers);
+        const transfers = await getTransfers(currentDestination);
+        setTransfers(transfers);
       };
 
       fetchTransfers();

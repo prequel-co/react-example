@@ -14,14 +14,11 @@ const ALL_CURRENT_FUTURE_MODELS = ["*"];
 
 type ProductsAndModelsProps = {
   destination: Destination;
-  setDestinationField: (
-    key: keyof Destination,
-    value: string | string[] | boolean | undefined
-  ) => void;
+  setDestination: React.Dispatch<React.SetStateAction<Partial<Destination>>>;
 };
 const ProductsAndModels = ({
   destination,
-  setDestinationField,
+  setDestination,
 }: ProductsAndModelsProps) => {
   const [availableModels, setAvailableModels] = useState<ModelConfig[]>([]);
   const models = useModels(fetchToken, REACT_ORIGIN, PREQUEL_HOST);
@@ -55,7 +52,7 @@ const ProductsAndModels = ({
     );
 
     if (!allCurrentFutureModelsSelected) {
-      setDestinationField("enabled_models", newEnabledModels);
+      setDestination({ enabled_models: newEnabledModels });
     }
   }, [availableModels]); // eslint-disable-line
 
@@ -75,7 +72,7 @@ const ProductsAndModels = ({
         destination.enabled_models?.filter((m) => m !== modelName) ?? [];
     }
 
-    setDestinationField("enabled_models", updatedModels);
+    setDestination({ enabled_models: updatedModels });
   };
 
   return (
@@ -113,11 +110,10 @@ const ProductsAndModels = ({
             checked={allCurrentFutureModelsSelected}
             onChange={({ target }) =>
               target.checked
-                ? setDestinationField(
-                    "enabled_models",
-                    ALL_CURRENT_FUTURE_MODELS
-                  )
-                : setDestinationField("enabled_models", [])
+                ? setDestination({
+                    enabled_models: ALL_CURRENT_FUTURE_MODELS,
+                  })
+                : setDestination({ enabled_models: [] })
             }
           />
         </>

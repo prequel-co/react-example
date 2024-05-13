@@ -1,17 +1,14 @@
 import React, { useEffect, useState } from "react";
 import Table from "react-bootstrap/Table";
-import {
-  ExistingDestination,
-  useGetDestinationsForRecipient,
-} from "@prequel/react";
+import { ExistingDestination, useGetDestinations } from "@prequel/react";
 
-import { fetchTokenRecipient } from "../fetchToken";
+import fetchToken from "../fetchToken";
 import { PREQUEL_HOST, REACT_ORIGIN } from "../host";
 
 const GetDestinationsExample = () => {
   const [destinations, setDestinations] = useState<ExistingDestination[]>();
-  const getDestinations = useGetDestinationsForRecipient(
-    fetchTokenRecipient,
+  const getDestinations = useGetDestinations(
+    fetchToken,
     REACT_ORIGIN,
     PREQUEL_HOST
   );
@@ -20,8 +17,8 @@ const GetDestinationsExample = () => {
   useEffect(() => {
     if (recipientId && !destinations) {
       const fetchDestinations = async () => {
-        const destinationsResponse = await getDestinations(recipientId);
-        setDestinations(destinationsResponse.data?.destinations);
+        const destinations = await getDestinations();
+        setDestinations(destinations);
       };
 
       fetchDestinations();

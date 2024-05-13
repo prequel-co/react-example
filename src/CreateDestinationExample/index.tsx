@@ -1,6 +1,5 @@
-import React, { Fragment, useMemo, useCallback, useRef } from "react";
+import React, { Fragment, useMemo, useRef } from "react";
 import {
-  Destination,
   useCreateDestination,
   useDestination,
   useDestinationForm,
@@ -27,26 +26,15 @@ const CreateDestinationExample = () => {
   const destinationForm = useDestinationForm(
     destination,
     process.env.REACT_APP_PREQUEL_ORG_ID ?? "",
-    false,
-    PREQUEL_HOST
+    {
+      includeInternalFields: false,
+      host: PREQUEL_HOST,
+    }
   );
   const createDestination = useCreateDestination(
     fetchToken,
     REACT_ORIGIN,
     PREQUEL_HOST
-  );
-
-  const setDestinationField = useCallback(
-    (
-      key: keyof Destination,
-      value: string | string[] | boolean | undefined
-    ) => {
-      setDestination((currentDestination) => ({
-        ...currentDestination,
-        [key]: value,
-      }));
-    },
-    [setDestination]
   );
 
   const preparedDestination = useMemo(
@@ -123,11 +111,11 @@ const CreateDestinationExample = () => {
                   </div>
                 );
               } else if (field.form_element === "select") {
-                const items = field.enum.map(({ key, display }) => ({
+                const items = field.enum?.map(({ key, display }) => ({
                   key: key.toString(),
                   display,
                 }));
-                const selected = items.find(
+                const selected = items?.find(
                   ({ key }) => key.toString() === destination[field.name]
                 );
                 return (
@@ -136,15 +124,16 @@ const CreateDestinationExample = () => {
                     <Form.Select
                       value={selected?.key || ""}
                       onChange={({ target }) =>
-                        setDestinationField(field.name, target.value)
+                        setDestination({ [field.name]: target.value })
                       }
                       required={field.required}
                     >
-                      {items.map((item) => (
-                        <option key={item.key} value={item.key}>
-                          {item.display}
-                        </option>
-                      ))}
+                      {items &&
+                        items.map((item) => (
+                          <option key={item.key} value={item.key}>
+                            {item.display}
+                          </option>
+                        ))}
                     </Form.Select>
                     {field.description && (
                       <Form.Text className="text-muted d-flex">
@@ -162,7 +151,7 @@ const CreateDestinationExample = () => {
                       placeholder={field.placeholder}
                       value={destination[field.name]?.toString()}
                       onChange={({ target }) =>
-                        setDestinationField(field.name, target.value)
+                        setDestination({ [field.name]: target.value })
                       }
                       required={field.required}
                     />
@@ -182,7 +171,7 @@ const CreateDestinationExample = () => {
                       placeholder={field.placeholder}
                       value={destination[field.name]?.toString()}
                       onChange={({ target }) =>
-                        setDestinationField(field.name, target.value)
+                        setDestination({ [field.name]: target.value })
                       }
                       required={field.required}
                     />
@@ -203,7 +192,7 @@ const CreateDestinationExample = () => {
                         label={field.label}
                         checked={!!destination[field.name]}
                         onChange={({ target }) =>
-                          setDestinationField(field.name, target.checked)
+                          setDestination({ [field.name]: target.checked })
                         }
                       />
                     </div>
@@ -225,7 +214,7 @@ const CreateDestinationExample = () => {
                           label={display}
                           checked={destination[field.name] === key}
                           onChange={({ target }) =>
-                            setDestinationField(field.name, target.value)
+                            setDestination({ [field.name]: target.value })
                           }
                         />
                       ))}
@@ -242,7 +231,7 @@ const CreateDestinationExample = () => {
       ))}
       <ProductsAndModels
         destination={destination}
-        setDestinationField={setDestinationField}
+        setDestination={setDestination}
       />
       <hr />
       <TestConnection

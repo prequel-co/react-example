@@ -1,23 +1,15 @@
-import React, {
-  Fragment,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import {
-  Destination,
   ExistingDestination,
   prepareDestinationFromExisting,
   prepareDestinationWithForm,
   useDestination,
   useDestinationForm,
-  useGetDestinationsForRecipient,
+  useGetDestinations,
   useUpdateDestination,
 } from "@prequel/react";
 
-import fetchToken, { fetchTokenRecipient } from "../fetchToken";
+import fetchToken from "../fetchToken";
 import { PREQUEL_HOST, REACT_ORIGIN } from "../host";
 import { Button, Card, Dropdown, Form, Spinner } from "react-bootstrap";
 import TextExistingConnection from "./TestExistingConnection";
@@ -29,14 +21,16 @@ const UpdateDestinationExample = () => {
   const destinationForm = useDestinationForm(
     destination,
     process.env.REACT_APP_PREQUEL_ORG_ID ?? "",
-    false,
-    PREQUEL_HOST
+    {
+      includeInternalFields: false,
+      host: PREQUEL_HOST,
+    }
   );
   const [destinations, setDestinations] = useState<ExistingDestination[]>();
   const [currentDestination, setCurrentDestination] =
     useState<ExistingDestination>();
-  const getDestinations = useGetDestinationsForRecipient(
-    fetchTokenRecipient,
+  const getDestinations = useGetDestinations(
+    fetchToken,
     REACT_ORIGIN,
     PREQUEL_HOST
   );
@@ -50,8 +44,8 @@ const UpdateDestinationExample = () => {
   useEffect(() => {
     if (recipientId && !destinations) {
       const fetchDestinations = async () => {
-        const destinationsResponse = await getDestinations(recipientId);
-        setDestinations(destinationsResponse.data?.destinations);
+        const destinations = await getDestinations();
+        setDestinations(destinations);
       };
 
       fetchDestinations();
@@ -70,19 +64,6 @@ const UpdateDestinationExample = () => {
       setDestination(converted);
     }
   }, [setDestination, currentDestination]);
-
-  const setDestinationField = useCallback(
-    (
-      key: keyof Destination,
-      value: string | string[] | boolean | undefined
-    ) => {
-      setDestination((currentDestination) => ({
-        ...currentDestination,
-        [key]: value,
-      }));
-    },
-    [setDestination]
-  );
 
   const preparedDestination = useMemo(
     () => prepareDestinationWithForm(destination, destinationForm),
@@ -191,11 +172,11 @@ const UpdateDestinationExample = () => {
                     </div>
                   );
                 } else if (field.form_element === "select") {
-                  const items = field.enum.map(({ key, display }) => ({
+                  const items = field.enum?.map(({ key, display }) => ({
                     key: key.toString(),
                     display,
                   }));
-                  const selected = items.find(
+                  const selected = items?.find(
                     ({ key }) => key.toString() === destination[field.name]
                   );
                   return (
@@ -204,15 +185,16 @@ const UpdateDestinationExample = () => {
                       <Form.Select
                         value={selected?.key || ""}
                         onChange={({ target }) =>
-                          setDestinationField(field.name, target.value)
+                          setDestination({ [field.name]: target.value })
                         }
                         required={field.required}
                       >
-                        {items.map((item) => (
-                          <option key={item.key} value={item.key}>
-                            {item.display}
-                          </option>
-                        ))}
+                        {items &&
+                          items.map((item) => (
+                            <option key={item.key} value={item.key}>
+                              {item.display}
+                            </option>
+                          ))}
                       </Form.Select>
                       {field.description && (
                         <Form.Text className="text-muted d-flex">
@@ -230,7 +212,7 @@ const UpdateDestinationExample = () => {
                         placeholder={field.placeholder}
                         value={destination[field.name]?.toString() ?? ""}
                         onChange={({ target }) =>
-                          setDestinationField(field.name, target.value)
+                          setDestination({ [field.name]: target.value })
                         }
                         required={
                           field.name === "password" ? false : field.required
@@ -252,7 +234,7 @@ const UpdateDestinationExample = () => {
                         placeholder={field.placeholder}
                         value={destination[field.name]?.toString()}
                         onChange={({ target }) =>
-                          setDestinationField(field.name, target.value)
+                          setDestination({ [field.name]: target.value })
                         }
                         required={
                           field.name === "service_account_key"
@@ -277,7 +259,7 @@ const UpdateDestinationExample = () => {
                           label={field.label}
                           checked={!!destination[field.name]}
                           onChange={({ target }) =>
-                            setDestinationField(field.name, target.checked)
+                            setDestination({ [field.name]: target.checked })
                           }
                         />
                       </div>
@@ -299,7 +281,7 @@ const UpdateDestinationExample = () => {
                             label={display}
                             checked={destination[field.name] === key}
                             onChange={({ target }) =>
-                              setDestinationField(field.name, target.value)
+                              setDestination({ [field.name]: target.value })
                             }
                           />
                         ))}
@@ -316,7 +298,7 @@ const UpdateDestinationExample = () => {
         ))}
         <ProductsAndModels
           destination={destination}
-          setDestinationField={setDestinationField}
+          setDestination={setDestination}
         />
         <hr />
         {currentDestination && (

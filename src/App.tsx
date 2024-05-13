@@ -7,6 +7,7 @@ import GetTransfersExample from "./GetTransfersExample";
 import GetDestinationsExample from "./GetDestinationsExample";
 import UpdateDestinationExample from "./UpdateDestinationExample";
 import DeleteDestinationExample from "./DeleteDestinationExample";
+import SupportedDestinationsExample from "./SupportedDestinationsExample";
 
 import "./App.css";
 
@@ -37,6 +38,11 @@ function App() {
         <Tab eventKey="delete_destination" title="Delete Destination">
           <div className="p-5">
             <DeleteDestinationExample />
+          </div>
+        </Tab>
+        <Tab eventKey="supported_destinations" title="Supported Destinations">
+          <div className="p-5">
+            <SupportedDestinationsExample />
           </div>
         </Tab>
       </Tabs>
