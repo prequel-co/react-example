@@ -27,8 +27,8 @@ const TestConnection = ({
     validateForm();
     setTestRunning(true);
     setTestResult("Testing new connection...");
-    const { status, message } = await testConnection(preparedDestination);
-    if (status === "success") {
+    const { data, message } = await testConnection(preparedDestination);
+    if (data?.status === "success") {
       setTestResult("Connection test successful.");
     } else {
       setTestResult(message);

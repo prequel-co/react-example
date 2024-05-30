@@ -37,7 +37,7 @@ const TestConnection = ({
       destination,
       preparedDestination
     );
-    if (data) {
+    if (data?.status === "success") {
       setTestResult("Connection test successful.");
     } else {
       setTestResult(message);
