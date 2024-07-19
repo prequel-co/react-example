@@ -27,6 +27,7 @@ const UpdateDestinationExample = () => {
     }
   );
   const [destinations, setDestinations] = useState<ExistingDestination[]>();
+  const [destinationPopulated, setDestinationPopulated] = useState(false);
   const [currentDestination, setCurrentDestination] =
     useState<ExistingDestination>();
   const getDestinations = useGetDestinations(
@@ -59,11 +60,12 @@ const UpdateDestinationExample = () => {
   }, [destinations]);
 
   useEffect(() => {
-    if (currentDestination) {
+    if (currentDestination && !destinationPopulated) {
       const converted = prepareDestinationFromExisting(currentDestination);
       setDestination(converted);
+      setDestinationPopulated(true);
     }
-  }, [setDestination, currentDestination]);
+  }, [setDestination, currentDestination, destinationPopulated]);
 
   const preparedDestination = useMemo(
     () => prepareDestinationWithForm(destination, destinationForm),

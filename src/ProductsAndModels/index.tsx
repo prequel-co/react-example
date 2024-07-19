@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useMemo } from "react";
 import {
   Destination,
-  useModels,
-  useProducts,
   ModelConfig,
+  useGetModelsForRecipient,
 } from "@prequel/react";
 import Form from "react-bootstrap/Form";
 
@@ -20,41 +19,24 @@ const ProductsAndModels = ({
   destination,
   setDestination,
 }: ProductsAndModelsProps) => {
-  const [availableModels, setAvailableModels] = useState<ModelConfig[]>([]);
-  const models = useModels(fetchToken, REACT_ORIGIN, PREQUEL_HOST);
-  const products = useProducts(fetchToken, REACT_ORIGIN, PREQUEL_HOST);
+  const [recipientModels, setRecipientModels] = useState<ModelConfig[]>();
+  const getRecipientModels = useGetModelsForRecipient(
+    fetchToken,
+    REACT_ORIGIN,
+    PREQUEL_HOST
+  );
+
   useEffect(() => {
-    // if selectedProducts change, update the available models list
-    if (products) {
-      let modelNames: string[] = [];
-      products?.forEach(({ product_name, models }) => {
-        // If the product is in the list, append all the models
-        if (destination.products?.includes(product_name)) {
-          modelNames = [...modelNames, ...models];
+    if (getRecipientModels && !recipientModels) {
+      const fetchModels = async () => {
+        const m = await getRecipientModels();
+        if (m) {
+          setRecipientModels(m);
         }
-      });
-
-      // This also de-deduplicates the model names
-      const newAvailableModels =
-        models?.filter(({ model_name }) => modelNames.includes(model_name)) ??
-        [];
-      setAvailableModels(newAvailableModels);
+      };
+      fetchModels();
     }
-  }, [destination.products, models, products]);
-
-  useEffect(() => {
-    // Filter out any models that have been removed from availableModels
-    const newAvailableModelNames = availableModels.map(
-      ({ model_name }) => model_name
-    );
-    const newEnabledModels = destination.enabled_models?.filter((m) =>
-      newAvailableModelNames.includes(m)
-    );
-
-    if (!allCurrentFutureModelsSelected) {
-      setDestination({ enabled_models: newEnabledModels });
-    }
-  }, [availableModels]); // eslint-disable-line
+  }, [getRecipientModels, recipientModels]);
 
   const allCurrentFutureModelsSelected = useMemo(
     () =>
@@ -78,9 +60,9 @@ const ProductsAndModels = ({
   return (
     <div className="mb-3 d-flex flex-column align-items-start">
       <Form.Label>Select what models the destination will receive</Form.Label>
-      {availableModels.length > 0 && (
+      {recipientModels && (
         <>
-          {availableModels.map(({ model_name, description }) => {
+          {recipientModels.map(({ model_name, description }) => {
             const label = description
               ? `${model_name} - ${description}`
               : model_name;
