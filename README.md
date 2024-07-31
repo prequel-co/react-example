@@ -1,4 +1,19 @@
-This example app shows how you can use hooks from [@prequel/react](https://www.npmjs.com/package/@prequel/react) in your React application. These hooks enable you to build a dynamic form that allows users to register their warehouses as Prequel destinations. This example uses React Bootstrap components to build a styled form, but it can be easily substituted with any component library. For more details on usage of [@prequel/react](https://www.npmjs.com/package/@prequel/react), please see our [docs](https://docs.prequel.co/docs/react).
+## Prerequisites
+- [ ] You must have a Prequel API key and know the corresponding Prequel host URL to successfully run the webapp. If you're unsure where to find these, please ask your Prequel support contact.
+
+## About this Example App
+
+This example app shows how you can use hooks from [@prequel/react](https://www.npmjs.com/package/@prequel/react) in your React application. These hooks enable you to easily embed all of Prequel's functionality directly in your customer-facing app - including adding, viewing, updating, and deleting connections as well as viewing historical transfers & sync activity. This example uses React Bootstrap components to build a styled form, but it can be easily substituted with any component library, including your own. For more details on usage of [@prequel/react](https://www.npmjs.com/package/@prequel/react), please see our [docs](https://docs.prequel.co/docs/react). 
+
+By cloning the repository, entering your API key, and running `npm run example`, your browser should open to an interactive reference implementation of Prequel's embedded data sharing feature, as seen in the screenshots below. 
+
+### Screenshots
+
+#### Example "Connect Destination" form
+![Example "Connect Destination" form, unstyled](https://storage.googleapis.com/prequel_docs/images/react-example-add-databricks.png)
+
+#### Example "Destination Options" list
+![Example "Destination Options" list](https://storage.googleapis.com/prequel_docs/images/react-example-destinations.png)
 
 ## Getting Started with the Prequel React Example App
 
