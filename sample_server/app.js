@@ -42,8 +42,20 @@ app.post(AUTH_TOKEN, async (req, res) => {
       recipient_id: recipientId, // This is a validated Recipient ID value
       destination: req.body,
     }),
-  }).then((response) => response.json())
-  .then((body) => body.data.scoped_token)
+  }).then((response) => {
+    return response.json().then((body) => ({
+      ok: response.ok,
+      status: response.status,
+      body,
+    }))
+  })
+  .then(({ok, status, body}) => {
+    if (!ok) {
+      throw new Error(`status ${status} fetching scoped auth token: ${body.message}`)
+    }
+
+    return body.data.scoped_token
+  })
   .catch((reason) => {
     console.error(reason);
     return ""

@@ -145,8 +145,11 @@ const CreateDestinationExample = () => {
               } else if (field.form_element === "input") {
                 return (
                   <div key={field.name} className="mb-3">
-                    <Form.Label className="d-flex">{field.label}</Form.Label>
+                    <Form.Label htmlFor={field.name} className="d-flex">
+                      {field.label}
+                    </Form.Label>
                     <Form.Control
+                      id={field.name}
                       type={field.input_type ?? "text"}
                       placeholder={field.placeholder}
                       value={destination[field.name]?.toString()}

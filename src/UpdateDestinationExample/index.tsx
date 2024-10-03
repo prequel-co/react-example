@@ -291,7 +291,7 @@ const UpdateDestinationExample = () => {
                     </div>
                   );
                 } else {
-                  return <></>;
+                  return <div key={field.name}></div>;
                 }
               })}
             </Form.Group>
