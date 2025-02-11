@@ -125,7 +125,6 @@ const CreateDestinationExample = () => {
                     <Form.Select
                       value={selected?.key || ""}
                       onChange={({ target }) => {
-                        console.log("target", target);
                         setDestination({ [field.name]: target.value });
                       }}
                       required={field.required}

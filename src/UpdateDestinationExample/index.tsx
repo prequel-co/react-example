@@ -25,6 +25,7 @@ const UpdateDestinationExample = () => {
       includeInternalFields: false,
       host: PREQUEL_HOST,
       recipientId: process.env.REACT_APP_RECIPIENT_ID ?? "",
+      isEditing: true,
     }
   );
   const [destinations, setDestinations] = useState<ExistingDestination[]>();
