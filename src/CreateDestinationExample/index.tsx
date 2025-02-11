@@ -29,6 +29,7 @@ const CreateDestinationExample = () => {
     {
       includeInternalFields: false,
       host: PREQUEL_HOST,
+      recipientId: process.env.REACT_APP_RECIPIENT_ID ?? "",
     }
   );
   const createDestination = useCreateDestination(
@@ -123,9 +124,10 @@ const CreateDestinationExample = () => {
                     <Form.Label className="d-flex">{field.label}</Form.Label>
                     <Form.Select
                       value={selected?.key || ""}
-                      onChange={({ target }) =>
-                        setDestination({ [field.name]: target.value })
-                      }
+                      onChange={({ target }) => {
+                        console.log("target", target);
+                        setDestination({ [field.name]: target.value });
+                      }}
                       required={field.required}
                     >
                       {items &&
