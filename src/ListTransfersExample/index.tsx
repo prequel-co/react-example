@@ -4,7 +4,7 @@ import {
   ExistingDestination,
   PaginationCursor,
   Transfer,
-  useGetDestinations,
+  useListDestinations,
   useListTransfers,
 } from "@prequel/react";
 
@@ -26,7 +26,7 @@ const ListTransfersExample = () => {
     REACT_ORIGIN,
     PREQUEL_HOST
   );
-  const getDestinations = useGetDestinations(
+  const getDestinations = useListDestinations(
     fetchToken,
     REACT_ORIGIN,
     PREQUEL_HOST
@@ -35,9 +35,9 @@ const ListTransfersExample = () => {
   useEffect(() => {
     if (!destinations) {
       const fetchDestinations = async () => {
-        const destinations = await getDestinations();
-        setDestinations(destinations);
-        setCurrentDestination(destinations[0]);
+        const { results } = await getDestinations({pageSize: 100});
+        setDestinations(results);
+        setCurrentDestination(results[0]);
       };
 
       fetchDestinations();

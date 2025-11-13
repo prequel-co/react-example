@@ -5,7 +5,7 @@ import {
   prepareDestinationWithForm,
   useDestination,
   useDestinationForm,
-  useGetDestinations,
+  useListDestinations,
   useUpdateDestination,
 } from "@prequel/react";
 
@@ -30,7 +30,7 @@ const UpdateDestinationExample = () => {
   const [destinationPopulated, setDestinationPopulated] = useState(false);
   const [currentDestination, setCurrentDestination] =
     useState<ExistingDestination>();
-  const getDestinations = useGetDestinations(
+  const getDestinations = useListDestinations(
     fetchToken,
     REACT_ORIGIN,
     PREQUEL_HOST
@@ -45,8 +45,8 @@ const UpdateDestinationExample = () => {
   useEffect(() => {
     if (recipientId && !destinations) {
       const fetchDestinations = async () => {
-        const destinations = await getDestinations();
-        setDestinations(destinations);
+        const { results } = await getDestinations({pageSize: 100});
+        setDestinations(results);
       };
 
       fetchDestinations();
